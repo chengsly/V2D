@@ -6,26 +6,7 @@ Modeling disease effect sizes from genome-wide association studies (GWAS) is cri
 
 This is the repository for Variant2Disease-V2D, a variant-to-disease (V2D) framework that models disease effect sizes using machine-learning algorithms on genome-wide estimates of posterior mean squared causal effect sizes and functional annotations.
 
-The paper corresponding to this repository has been published at xxxxxx. The exact code version used in the paper can be found at xxxxxxxx. If you find V2D useful, please consider to cite: 
-- xxxxxxxxxxx
 
-Please direct any questions to xxxxxxxxx.
-
-## Installation
-
-
-### Testing
-
-
-## Usage
-
-### Prediction
-
-
-
-### Prediction File Format
-
-As an example:
 
 
 
