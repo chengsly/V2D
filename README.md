@@ -7,6 +7,81 @@ Modeling disease effect sizes from genome-wide association studies (GWAS) is cri
 This is the repository for Variant2Disease-V2D, a variant-to-disease (V2D) framework that models disease effect sizes using machine-learning algorithms on genome-wide estimates of posterior mean squared causal effect sizes and functional annotations.
 
 
+
+# `v2d.py` — Input File Formats
+
+This document describes the expected formats for the **annotation** (`--annot`) and **beta2/target** (`--beta2`) files used by `v2d.py`. It also clarifies how records are matched, how to exclude features, and common pitfalls. Examples are provided to make validation easy.
+
+> - Files are tab-delimited by default (set with `--delimiter`, default `"\t"`).  
+> - Gzipped files (`.gz`) are supported; plain text is fine too.  
+> - Rows are matched by the **triple key `(CHR, BP, SNP)`**.  
+> - `--annot` contains features (one row per variant); `--beta2` contains the target column(s).  
+> - Avoid duplicate keys. Keep consistent row counts *or* enable merging by keys in your codebase.
+
+
+
+## 1) Annotation file (`--annot`)
+
+**Purpose:** feature matrix for each variant/row used by the model.
+
+**File type:** TSV/CSV (default delimiter is `\t`), optionally gzipped (`.gz`).  
+**Required columns:**  
+- `CHR` — chromosome (integer or string like `"X"`, but prefer integer coding: 1–22, 23 for X, 24 for Y)  
+- `BP` — base-pair position (integer)  
+- `SNP` — variant identifier (string; e.g., rsID)  
+
+**Feature columns:**  
+- One or more numeric feature columns, e.g., `MAFbin_frequent_1`, `GCcontent`, `conserved_phylop`, etc.  
+- All features must be numeric (`int`/`float`). If you have categories, **one-hot encode** them **before** running `v2d.py`.  
+- Missing values should be encoded as either blank, `NA`, or `NaN`. (Best practice: impute or drop before training.)
+
+**Header:** A header row is expected.  
+**Row order:** Any order is acceptable **if** your `v2d.py` build performs a merge on `(CHR,BP,SNP)`. If your version expects **aligned order**, sort both `--annot` and `--beta2` identically and ensure 1:1 row matching.
+
+### Minimal example (`.tsv`)
+```text
+CHR	BP	SNP	MAFbin_frequent_1	MAFbin_frequent_2	GCcontent
+1	10177	rs367896724	0	0	0.41
+1	10352	rs201106462	1	0	0.36
+1	10505	rs531730856	0	1	0.39
+```
+
+---
+
+## 2) Beta2/target file (`--beta2`)
+
+**Purpose:** provides the response/label for each variant row.
+
+**File type:** TSV/CSV (default delimiter is `\t`), optionally gzipped (`.gz`).  
+**Required columns:**  
+- `CHR`, `BP`, `SNP` — must match the annotation file’s keys.  
+- `Y` — the numeric response (float). *(Some pipelines support multiple targets like `Y_trait1`, `Y_trait2`; if so, specify which column is used in your code.)*
+
+**Header:** A header row is expected.  
+**Row order:** Any order is acceptable **if** your `v2d.py` build merges on `(CHR,BP,SNP)`. If your version expects **aligned order**, sort to match `--annot` and keep 1:1 rows.
+
+### Minimal example (`.tsv`)
+```text
+CHR	BP	SNP	Y
+1	10177	rs367896724	0.0000
+1	10352	rs201106462	0.0000
+1	10505	rs531730856	0.0125
+```
+
+## 3) Excluding Features (`--exclude`)
+
+You can drop feature columns from the annotation file at load time:
+```bash
+--exclude MAFbin_frequent_1 GCcontent
+```
+- Names must exactly match `--annot` header columns.  
+- Exclusions are applied **after** reading the file and **before** modeling.  
+- You cannot exclude `CHR`, `BP`, or `SNP` (key columns).
+
+
+
+
+
 # `v2d.py` Documentation Command-line Interface
 
 ## Quick Start
