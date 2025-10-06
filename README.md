@@ -105,8 +105,8 @@ python v2d.py \
   --beta2 beta2/15ukbb.beta2_prior.common.txt.gz \
   --annot annotations/baselineLF.common \
   --model mlp \
-  --n_neurons 64 \
-  --n_layers 3 \
+  --n_neurons 6 \
+  --n_layers 5 \
   --nbseed 10 \
   --print_mse --print_model \
   --out V2D/ukbb/v2d_ukbb.common
@@ -274,7 +274,6 @@ We evaluate a **grid of choices** for each model, compute validation MSE with **
 **MLP** 
 - `N_LAYERS = 1 2 3 4 5 6 10`
 - `N_NEURONS = 1 2 3 4 5 6 10 15`
-  - If your table defines neurons as **multiples of 64**, use `--n_neurons $((w*64))`.
 
 
 ```bash
