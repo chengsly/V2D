@@ -10,11 +10,11 @@ This is the repository for Variant2Disease-V2D, a variant-to-disease (V2D) frame
 
 # `v2d.py` — Input File Formats
 
-This document describes the expected formats for the **annotation** (`--annot`) and **beta2/target** (`--beta2`) files used by `v2d.py`. It also clarifies how records are matched, how to exclude features, and common pitfalls. Examples are provided to make validation easy.
+This document describes the expected formats for the annotation (`--annot`) and beta2/target (`--beta2`) files used by `v2d.py`. It also clarifies how records are matched, how to exclude features, and common pitfalls. Examples are provided to make validation easy.
 
 > - Files are tab-delimited by default (set with `--delimiter`, default `"\t"`).  
 > - Gzipped files (`.gz`) are supported; plain text is fine too.  
-> - Rows are matched by the **key `(CHR, BP, SNP, ID)`**.  
+> - Rows are matched by the key `(CHR, BP, SNP, ID)`.  
 > - `--annot` contains features (one row per variant); `--beta2` contains the target column(s).  
 > - Avoid duplicate keys. Keep consistent row counts *or* enable merging by keys in your codebase.
 
@@ -34,7 +34,7 @@ This document describes the expected formats for the **annotation** (`--annot`) 
 
 **Feature columns:**  
 - One or more numeric feature columns, e.g., `MAFbin_frequent_1`, `GCcontent`, `conserved_phylop`, etc.  
-- All features must be numeric (`int`/`float`). If you have categories, **one-hot encode** them **before** running `v2d.py`.  
+- All features must be numeric (`int`/`float`). If you have categories, one-hot encode them before running `v2d.py`.  
 - Missing values should be replaced by the genome-wide average value.
 
 **Header:** A header row is expected.  
@@ -77,7 +77,7 @@ You can drop feature columns from the annotation file at load time:
 --exclude MAFbin_frequent_1 GCcontent
 ```
 - Names must exactly match `--annot` header columns.  
-- Exclusions are applied **after** reading the file and **before** modeling.  
+- Exclusions are applied after reading the file and before modeling.  
 - You cannot exclude `CHR`, `BP`, `SNP`, or `ID` (key columns).
 
 
@@ -235,7 +235,7 @@ python v2d.py \
 
 ## Hyperparameter search and MSE (LEOCO)
 
-Compute **MSE** under a **leave-even/odd-chromosomes-out (LEOCO)** scheme to pick hyperparameters across models (MLP with the **paper-highlighted settings**, plus tree, RF, XGBoost, and the linear baseline). We evaluate a **grid of choices** for each model and select the **configuration with the minimal aggregated LEOCO MSE** (for MLP, averages are taken over multiple seeds).
+Compute MSE under a leave-even/odd-chromosomes-out (LEOCO) scheme to pick hyperparameters across models. We evaluate a grid of choices for each model and select the configuration with the minimal aggregated LEOCO MSE (for MLP, averages are taken over multiple seeds).
 
 
 ### Paper grids
