@@ -20,7 +20,7 @@ This document describes the expected formats for the **annotation** (`--annot`) 
 
 
 
-## 1) Annotation file (`--annot`)
+## 1) Annotation file (`--annot` and `--pred`)
 
 **Purpose:** feature matrix for each variant/row used by the model.
 
@@ -29,17 +29,15 @@ This document describes the expected formats for the **annotation** (`--annot`) 
 - `CHR` — chromosome (integer or string like `"X"`, but prefer integer coding: 1–22, 23 for X, 24 for Y)  
 - `BP` — base-pair position (integer)  
 - `SNP` — variant identifier (string; e.g., rsID)  
-- `ID` — **unique** variant ID to disambiguate duplicates when multiple rows share the same `SNP` (e.g., `chr:bp:ref:alt`)
-
+- `ID` — **unique** variant ID to disambiguate duplicates when multiple rows share the same rsID (e.g., you can provide `chr:bp:ref:alt`)
 
 
 **Feature columns:**  
 - One or more numeric feature columns, e.g., `MAFbin_frequent_1`, `GCcontent`, `conserved_phylop`, etc.  
 - All features must be numeric (`int`/`float`). If you have categories, **one-hot encode** them **before** running `v2d.py`.  
-- Missing values should be encoded as either blank, `NA`, or `NaN`. (Best practice: impute or drop before training.)
+- Missing values should be replaced by the genome-wide average value.
 
 **Header:** A header row is expected.  
-**Row order:** Any order is acceptable **if** your `v2d.py` build performs a merge on `(CHR,BP,SNP,ID)`. If your version expects **aligned order**, sort both `--annot` and `--beta2` identically and ensure 1:1 row matching.
 
 ### Minimal example (`.tsv`)
 ```text
@@ -52,15 +50,15 @@ CHR	BP	SNP	ID	MAFbin_frequent_1	MAFbin_frequent_2	GCcontent
 
 ## 2) Beta2/target file (`--beta2`)
 
-**Purpose:** provides the response/label for each variant row.
+**Purpose:** provides the posterior estimates of squared normalized effect sizes for each variant.
 
 **File type:** TSV/CSV (default delimiter is `\t`), optionally gzipped (`.gz`).  
 **Required columns (first four, in this order):**  
 - `CHR`, `BP`, `SNP`, `ID` — must match the annotation file’s keys.  
-- `Y` — the numeric response (float). *(Some pipelines support multiple targets like `Y_trait1`, `Y_trait2`; if so, specify which column is used in your code.)*
+- `Y` — the posterior estimates of squared normalized effect sizes (float).
+- We recommend removing variants in the MHC locus from this file.
 
 **Header:** A header row is expected.  
-**Row order:** Any order is acceptable **if** your `v2d.py` build merges on `(CHR,BP,SNP,ID)`. If your version expects **aligned order**, sort to match `--annot` and keep 1:1 rows.
 
 ### Minimal example (`.tsv`)
 ```text
@@ -81,18 +79,6 @@ You can drop feature columns from the annotation file at load time:
 - Names must exactly match `--annot` header columns.  
 - Exclusions are applied **after** reading the file and **before** modeling.  
 - You cannot exclude `CHR`, `BP`, `SNP`, or `ID` (key columns).
-
-
-
-
-## 4) Predictions with `--pred` (and where to get inputs)
-
-Add `--pred <annot_prefix>` to produce per-chromosome V2D predictions:
-```
-<out>.<CHR>.csv
-```
-Typical columns: `CHR, BP, SNP, ID, V2D` (plus any implementation-specific extras). If `--print_model` is set, fitted even/odd models may also be saved (e.g., `<out>.even.joblib`, `<out>.odd.joblib`).
-
 
 
 
@@ -251,14 +237,12 @@ python v2d.py \
 
 Compute **MSE** under a **leave-even/odd-chromosomes-out (LEOCO)** scheme to pick hyperparameters across models (MLP with the **paper-highlighted settings**, plus tree, RF, XGBoost, and the linear baseline). We evaluate a **grid of choices** for each model and select the **configuration with the minimal aggregated LEOCO MSE** (for MLP, averages are taken over multiple seeds).
 
-## Hyperparameter search and MSE (LEOCO)
-
-We evaluate a **grid of choices** for each model, compute validation MSE with **leave-even/odd-chromosomes-out (LEOCO)**, and select the **configuration with the minimal aggregated LEOCO MSE** (for MLP, average across seeds).
 
 ### Paper grids
 
 **Decision Tree** 
 - `LEAFS = 100000 50000 25000 10000 5000`
+- `DEPTH = 3 4 5 6 7 8 9 10`
 
 **Random Forest** 
 - `N_EST = 100 200 500 1000 2500 5000`
@@ -329,8 +313,6 @@ for ne in 25 40 50 100 200 500 1000; do
 done
 
 # --- MLP ---
-# If neurons are multiples of 64, set MULT=64; otherwise MULT=1
-MULT=64
 for w in 1 2 3 4 5 6 10 15; do
   for L in 1 2 3 4 5 6 10; do
     tag="mlp_w${w}_L${L}"
@@ -350,11 +332,15 @@ python v2d.py --beta2 "$BETA2" --annot "$ANNOT" \
   --print_mse \
   --out "$OUTDIR/linear_baseline"
 
-
-
+```
 
 
 ## Predicting V2D scores — one example
+To predict V2D scores, use the `--pred` option followed by annotation files in the same format as above.
+If you want to compute V2D scores for the same SNPs used in training, provide the same annotation files to `--annot` and `--pred`.
+If you want to compute V2D scores for a different set of SNPs, provide different annotation files for `--annot` and `--pred`.
+
+
 
 ```bash
 python v2d.py \
@@ -376,13 +362,14 @@ This writes per-chromosome files: `runs/v2d_mlp_common.<CHR>.csv` with columns l
 ## Utility: `plot_tree.py` (generate tree figures)
 
 **Usage**
+```bash
 python plot_tree.py \
   --model_path V2D/ukbb/tree_depth4_leaf20.even.joblib \
   --annot_csv annotations/baselineLF.common.1.tsv \
   --delimiter $'\t' \
   --max_depth 3 \
   --out V2D/ukbb/tree_result.even.pdf
-
+```
 
 
 **Data availability**  
