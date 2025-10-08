@@ -370,6 +370,9 @@ python plot_tree.py \
   --max_depth 3 \
   --out V2D/ukbb/tree_result.even.pdf
 ```
+The --model_path input needs a previously saved decision tree model file, which was generated when running v2d.py with the flag "--print_model" ( an example is given as `V2D/ukbb/tree_depth4_leaf20.eve.joblib`, where joblib is the extension of saved scikit-learn models). A trained model needs to exist to plot it and use the `plot_tree.py` script. 
+
+The file --annot_csv specifies the csv file used to train the tree model. This is required to extract the feature names. 
 
 
 **Data availability**  
