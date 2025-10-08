@@ -214,41 +214,6 @@ start_time = time.time()
 start_str = datetime.now().strftime("%a %b %d %H:%M:%S %Y")
 myprint(f"\nBeginning analysis at {start_str}\n")
 
-#2) check error in options
-# if args.n_neurons and args.model != "mlp":
-#     raise ValueError (f"--n_neurons cannot be used with --model {args.model}; only with --model mlp")
-# if args.n_layers and args.model != "mlp":
-#     raise ValueError (f"--n_layers cannot be used with --model {args.model}; only with --model mlp")
-# if args.min_samples_leaf and args.model != "tree" and args.model != "rf":
-#     raise ValueError (f"--min_samples_leaf cannot be used with --model {args.model}; only with --model tree or --model rf")
-# if args.max_depth and args.model != "tree" and args.model != "rf" and args.model != "xgboost":
-#     raise ValueError (f"--max_depth cannot be used with --model {args.model}; only with --model tree, --model rf or --model xgboost")
-# if args.n_estimators and args.model != "tree" and args.model != "rf" and args.model != "xgboost":
-#     raise ValueError (f"--n_estimators cannot be used with --model {args.model}; only with --model tree, --model rf or --model xgboost")
-# if args.min_child_weight and args.model != "xgboost":
-#     raise ValueError (f"--min_child_weight cannot be used with --model {args.model}; only with --model xgboost")
-# if args.gamma and args.model != "xgboost":
-#     raise ValueError (f"--gamma cannot be used with --model {args.model}; only with --model xgboost")
-# if args.subsample and args.model != "xgboost":
-#     raise ValueError (f"--subsample cannot be used with --model {args.model}; only with --model xgboost")
-# if args.scale_pos_weight and args.model != "xgboost":
-#     raise ValueError (f"--scale_pos_weight cannot be used with --model {args.model}; only with --model xgboost")
-# if args.learning_rate and args.model != "xgboost":
-#     raise ValueError (f"--learning_rate cannot be used with --model {args.model}; only with --model xgboost")
-# #
-# if args.init_seed and args.model == "linear":
-#     raise ValueError (f"--init_seed cannot be used with --model linear")
-# if args.nbseed and args.model == "linear":
-#     raise ValueError (f"--nbseed cannot be used with --model linear")
-# #
-# if args.model=="linear":
-#     myprint(f"Selected model: linear.\n")
-# if args.model=="mlp" and (args.n_neurons is None or args.n_layers is None):
-#     raise ValueError (f"--model mlp requires --n_neurons and --n_layers options")
-# else:
-#     myprint(f"Selected model: mlp.\nOptions: n_neurons = {args.n_neurons}, n_layers = {args.n_layers}.\n")
-
-
 #2) comprehensive check error in options
 def _is_set(v):
     return v is not None
