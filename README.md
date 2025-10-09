@@ -70,17 +70,6 @@ CHR	BP	SNP	ID	Y
 
 
 
-## 3) Excluding Features (`--exclude`)
-
-You can drop feature columns from the annotation file at load time:
-```bash
---exclude MAFbin_frequent_1 GCcontent
-```
-- Names must exactly match `--annot` header columns.  
-- Exclusions are applied after reading the file and before modeling.  
-- You cannot exclude `CHR`, `BP`, `SNP`, or `ID` (key columns).
-
-
 
 # `v2d.py` Documentation Command-line Interface
 
@@ -105,7 +94,7 @@ python v2d.py \
 | `--model`  | `str` in `{linear, rf, mlp, xgb, tree}` | ✅ | Model family to train/evaluate. Enables model-specific flags below. |
 | `--annot`  | `str` (path) | ✅ | Path/prefix to annotations/features (e.g., baseline feature matrix). |
 | `--beta2`  | `str` (path) | ✅ | Path to response/target file (e.g., β² or label vector). |
-| `--out`    | `str` (path/prefix) | ✅ | Output file or prefix for logs/artifacts. |
+| `--out`    | `str` (path/prefix) | ✅ | Output prefix for predictions/logs/artifacts. |
 
 ## Reproducibility & Multi-runs
 
@@ -126,6 +115,7 @@ python v2d.py \
 |-----------------|------|:------:|-------------|
 | `--print_mse`   | flag | `False` | Print MSE to stdout (and/or include in logs). |
 | `--print_model` | flag | `False` | Print fitted model summary (coefficients, architecture, and/or tree params). |
+| `--pred`        | `strings…` | `[]` | Print V2D scores from annotation files (should have the same column names as files provided in `--annot`). |
 
 ## Model-Specific Hyperparameters
 
@@ -165,75 +155,13 @@ python v2d.py \
 | `--min_child_weight`, `--gamma`, `--subsample`, `--scale_pos_weight`, `--learning_rate` |  |  |  |  | ✅ |
 
 
-## Examples
+## Tutorial
 
-### 1) MLP 
-```bash
-python v2d.py \
-  --beta2 beta2/15ukbb.beta2_prior.common.txt.gz \
-  --annot annotations/baselineLF.common \
-  --model mlp \
-  --n_neurons 6 \
-  --n_layers 5 \
-  --nbseed 10 \
-  --print_mse --print_model \
-  --out V2D/ukbb/v2d_ukbb.common
-```
+## 1) Download data from Cheng et al. medrxiv
 
-### 2) Random Forest 
-```bash
-python v2d.py \
-  --beta2 beta2/15ukbb.beta2_prior.common.txt.gz \
-  --annot annotations/baselineLF.common \
-  --model rf \
-  --n_estimators 100 \
-  --max_depth 200 \
-  --min_samples_leaf 100 \
-  --exclude MAFbin_frequent_1 \
-  --out V2D/ukbb/rf_result
-```
+Formated beta2 and annotation files are available in https://zenodo.org/records/17257765.
 
-### 3) XGBoost 
-```bash
-python v2d.py \
-  --beta2 beta2/15ukbb.beta2_prior.common.txt.gz \
-  --annot annotations/baselineLF.common \
-  --model xgb \
-  --n_estimators 500 \
-  --max_depth 2 \
-  --learning_rate 0.05 \
-  --subsample 1 \
-  --min_child_weight 1 \
-  --gamma 0.0 \
-  --out V2D/ukbb/xgb_result
-```
-
-### 4) Single decision tree 
-```bash
-python v2d.py \
-  --beta2 beta2/15ukbb.beta2_prior.common.txt.gz \
-  --annot annotations/baselineLF.common \
-  --model tree \
-  --max_depth 4 \
-  --min_samples_leaf 20 \
-  --print_model \
-  --out V2D/ukbb/tree_result
-```
-
-### 5) Linear 
-```bash
-python v2d.py \
-  --beta2 beta2/15ukbb.beta2_prior.common.txt.gz \
-  --annot annotations/baselineLF.common \
-  --model linear \
-  --print_mse --print_model \
-  --out V2D/ukbb/linear_baseline
-```
-
-
-
-
-## Hyperparameter search and MSE (LEOCO)
+## 2) Hyperparameter search and MSE (LEOCO)
 
 Compute MSE under a leave-even/odd-chromosomes-out (LEOCO) scheme to pick hyperparameters across models. We evaluate a grid of choices for each model and select the configuration with the minimal aggregated LEOCO MSE (for MLP, averages are taken over multiple seeds).
 
@@ -335,7 +263,7 @@ python v2d.py --beta2 "$BETA2" --annot "$ANNOT" \
 ```
 
 
-## Predicting V2D scores — one example
+## 3) Predicting V2D scores
 To predict V2D scores, use the `--pred` option followed by annotation files in the same format as above.
 If you want to compute V2D scores for the same SNPs used in training, provide the same annotation files to `--annot` and `--pred`.
 If you want to compute V2D scores for a different set of SNPs, provide different annotation files for `--annot` and `--pred`.
@@ -357,7 +285,7 @@ python v2d.py \
 
 This writes per-chromosome files: `runs/v2d_mlp_common.<CHR>.csv` with columns like `CHR, BP, SNP, ID, V2D`, and (optionally) saves fitted models (e.g., `runs/v2d_mlp_common.even.joblib`, `runs/v2d_mlp_common.odd.joblib`).
 
-
+## 4) Plotting a tree of annotations
 
 ## Utility: `plot_tree.py` (generate tree figures)
 
