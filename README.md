@@ -194,12 +194,15 @@ mkdir -p "$OUTDIR"
 
 # --- Decision Tree ---
 for leaf in 100000 50000 25000 10000 5000; do
-  tag="tree_leaf${leaf}"
-  python v2d.py --beta2 "$BETA2" --annot "$ANNOT" \
-    --model tree \
-    --min_samples_leaf "$leaf" \
-    --print_mse \
-    --out "$OUTDIR/$tag"
+  for depth in 3 4 5 6 7 8 9 10; do
+    tag="tree_leaf${leaf}_depth${depth}"
+    python v2d.py --beta2 "$BETA2" --annot "$ANNOT" \
+      --model tree \
+      --min_samples_leaf "$leaf" \
+      --max_depth "$depth" \
+      --print_mse \
+      --out "$OUTDIR/$tag"
+  done
 done
 
 # --- Random Forest ---
