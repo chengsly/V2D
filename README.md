@@ -77,9 +77,9 @@ CHR	BP	SNP	ID	Y
 Example of command line to compute V2D scores from the linear model and output MSE
 ```bash
 python v2d.py \
-  --beta2 beta2/15ukbb.beta2_prior.common.txt.gz \
-  --annot annotations/baselineLF.common. \
   --model linear \
+  --annot annotations/baselineLF.common. \
+  --beta2 beta2/15ukbb.beta2_prior.common.txt.gz \
   --print_mse \
   --pred annotations/baselineLF.common. \
   --out V2D/ukbb/v2d_ukbb.common
@@ -153,7 +153,7 @@ python v2d.py \
 | `--min_child_weight`, `--gamma`, `--subsample`, `--scale_pos_weight`, `--learning_rate` |  |  |  |  | ✅ |
 
 
-## Tutorial
+# Tutorial
 
 ## 1) Download data from Cheng et al. medrxiv
 
@@ -188,7 +188,7 @@ Compute MSE under a leave-even/odd-chromosomes-out (LEOCO) scheme to pick hyperp
 
 ```bash
 BETA2="beta2/15ukbb.beta2_prior.common.txt.gz"
-ANNOT="annotations/baselineLF.common"
+ANNOT="annotations/baselineLF.common."
 OUTDIR="runs_paper"
 mkdir -p "$OUTDIR"
 
@@ -244,7 +244,7 @@ for w in 1 2 3 4 5 6 10 15; do
     tag="mlp_w${w}_L${L}"
     python v2d.py --beta2 "$BETA2" --annot "$ANNOT" \
       --model mlp \
-      --n_neurons "$((w*MULT))" \
+      --n_neurons "$w" \
       --n_layers "$L" \
       --nbseed 10 \
       --print_mse \
@@ -271,17 +271,17 @@ If you want to compute V2D scores for a different set of SNPs, provide different
 ```bash
 python v2d.py \
   --beta2 beta2/15ukbb.beta2_prior.common.txt.gz \
-  --annot annotations/baselineLF.common \
+  --annot annotations/baselineLF.common. \
   --model mlp \
   --n_neurons 6 \
   --n_layers 5 \
   --nbseed 10 \
-  --pred annotations/baselineLF.common \
+  --pred annotations/baselineLF.common. \
   --print_model \
   --out runs/v2d_mlp_common
 ```
 
-This writes per-chromosome files: `runs/v2d_mlp_common.<CHR>.csv` with columns like `CHR, BP, SNP, ID, V2D`, and (optionally) saves fitted models (e.g., `runs/v2d_mlp_common.even.joblib`, `runs/v2d_mlp_common.odd.joblib`).
+This writes per-chromosome files: `runs/v2d_mlp_common.<CHR>.csv` with columns `CHR, BP, SNP, ID, V2D`, and (optionally) saves fitted models (e.g., `runs/v2d_mlp_common.even.joblib`, `runs/v2d_mlp_common.odd.joblib`).
 
 ## 4) Plotting a tree of annotations
 
