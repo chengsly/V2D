@@ -74,16 +74,14 @@ CHR	BP	SNP	ID	Y
 # `v2d.py` Documentation Command-line Interface
 
 ## Quick Start
-
+Example of command line to compute V2D scores from the linear model and output MSE
 ```bash
 python v2d.py \
   --beta2 beta2/15ukbb.beta2_prior.common.txt.gz \
-  --annot annotations/baselineLF.common \
-  --model mlp \
-  --n_neurons 6 \
-  --n_layers 5 \
-  --nbseed 10 \
-  --print_mse --print_model \
+  --annot annotations/baselineLF.common. \
+  --model linear \
+  --print_mse \
+  --pred annotations/baselineLF.common. \
   --out V2D/ukbb/v2d_ukbb.common
 ```
 
