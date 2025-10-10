@@ -105,7 +105,7 @@ python v2d.py \
 
 | Argument    | Type        | Default | Description |
 |-------------|-------------|:------:|-------------|
-| `--exclude` | `strings…`  | `[]`   | List of feature/annotation column names to drop at load time. Example: `--exclude MAFbin_frequent_1 GCcontent`. |
+| `--exclude` | `strings…`  | `[]`   | List of feature/annotation column names to drop at load time. Example: `--exclude MAFbin_frequent_1 CpG_Content_50kb_common`. |
 
 ## Output Controls
 
