@@ -73,9 +73,9 @@ version_string = """************************************************************
 even_CHRs = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22]
 odd_CHRs = [1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21]
 all_CHRs = list(range(1,23))
-even_CHRs = [22]
-odd_CHRs = [21]
-all_CHRs = [21, 22]
+#even_CHRs = [22]
+#odd_CHRs = [21]
+#all_CHRs = [21, 22]
 
 
 def sse(Y_true, Y_pred):
