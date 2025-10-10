@@ -290,61 +290,17 @@ This writes per-chromosome files: `runs/v2d_mlp_common.<CHR>.csv` with columns `
 
 ## Utility: `plot_tree.py` (generate tree figures)
 
+Command line to plot a tree of depth 5 with a minimum 25K SNPs per leaf.
+
 **Usage**
 ```bash
 python plot_tree.py \
-  --model_path V2D/ukbb/tree_depth4_leaf20.even.joblib \
-  --annot_csv annotations/baselineLF.common.1.tsv \
-  --delimiter $'\t' \
-  --max_depth 3 \
-  --out V2D/ukbb/tree_result.even.pdf
+  --beta2 beta2/15ukbb.beta2_prior.common.txt.gz \
+  --annot annotations/baselineLF.common. \
+  --max_depth 5 \
+  --min_samples_leaf 25000 \
+  --out tree_result.pdf
 ```
-The --model_path input needs a previously saved decision tree model file, which was generated when running v2d.py with the flag "--print_model" ( an example is given as `V2D/ukbb/tree_depth4_leaf20.even.joblib`, where joblib is the extension of saved scikit-learn models). A trained model needs to exist to plot it and use the `plot_tree.py` script. 
-
-The file --annot_csv specifies the csv file used to train the tree model. This is required to extract the feature names. 
-
-
-## Testing
-
-We provide several test scripts to verify the V2D framework installation and functionality:
-
-### Quick Tests
-
-**1. Simple example test** (fastest, ~10 SNPs per chromosome):
-```bash
-cd v2d
-python example_test.py
-```
-
-**2. Comprehensive test suite** (tests all models with ~100 SNPs per chromosome):
-```bash
-cd v2d
-python test_v2d.py
-```
-
-**3. Integration test** (full workflow: train → save → visualize):
-```bash
-cd v2d
-python integration_test.py
-```
-
-### Test Data Format
-
-All test scripts create synthetic genomic data:
-- **Annotation files**: `CHR`, `BP`, `rsid`, `ID` + feature columns (gzipped `.annot.gz`)
-- **Beta2 file**: `CHR`, `BP`, `rsid`, `ID`, `beta2` (tab-separated)
-- **Target relationship**: Synthetic beta2 values with known feature relationships
-
-### Integration Test Workflow
-
-The `integration_test.py` demonstrates a complete analysis pipeline:
-1. Generate mock data (150 SNPs per chromosome with 8 genomic features)
-2. Train a decision tree model with `--print_model` flag
-3. Save the trained model (`.joblib` files)
-4. Visualize the tree structure using `plot_tree.py`
-5. Verify all outputs (log, MSE, model files, tree plot)
-
-Output: Creates `integration_test_data/tree_visualization.pdf` showing the learned decision tree.
 
 ### Requirements
 
