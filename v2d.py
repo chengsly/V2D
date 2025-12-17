@@ -37,7 +37,7 @@ parser.add_argument("--n_estimators", type=int, dest="n_estimators") ## also use
 parser.add_argument("--min_child_weight", type=int, dest="min_child_weight")
 parser.add_argument("--gamma", type=float, dest="gamma")
 parser.add_argument("--subsample", type=float, dest="subsample")
-parser.add_argument("--scale_pos_weight", type=int, dest="scale_pos_weight")
+parser.add_argument("--scale_pos_weight", type=int, default=1, dest="scale_pos_weight")
 parser.add_argument("--learning_rate", type=float, dest="learning_rate")
 
 

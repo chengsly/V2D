@@ -23,8 +23,8 @@ This document describes the expected formats for the annotation (`--annot`) and 
 **File type:** TSV/CSV (default delimiter is `\t`), optionally gzipped (`.gz`).  
 **Required columns (first four, in this order):**  
 - `CHR` — chromosome (integer or string like `"X"`, but prefer integer coding: 1–22, 23 for X, 24 for Y)  
-- `BP` — base-pair position (integer)  
-- `SNP` — variant identifier (string; e.g., rsID)  
+- `BP` (or `POS`) — base-pair position (integer)  
+- `SNP` (or `RS` or `rsid`) — variant identifier (string; e.g., rsID)  
 - `ID` — **unique** variant ID to disambiguate duplicates when multiple rows share the same rsID (e.g., you can provide `chr:bp:ref:alt`)
 
 
@@ -50,15 +50,15 @@ CHR	BP	SNP	ID	MAFbin_frequent_1	MAFbin_frequent_2	GCcontent
 
 **File type:** TSV/CSV (default delimiter is `\t`), optionally gzipped (`.gz`).  
 **Required columns (first four, in this order):**  
-- `CHR`, `BP`, `SNP`, `ID` — must match the annotation file’s keys.  
-- `Y` — the posterior estimates of squared normalized effect sizes (float).
+- `CHR`, `BP` (or `POS`), `SNP` (or `RS` or `rsid`), `ID` — must match the annotation file's keys.  
+- The **last column** contains the posterior estimates of squared normalized effect sizes (float). It can have any name (e.g., `Y`, `beta2`, etc.) — the script automatically uses the last column as the target.
 - We recommend removing variants in the MHC locus from this file.
 
 **Header:** A header row is expected.  
 
 ### Minimal example (`.tsv`)
 ```text
-CHR	BP	SNP	ID	Y
+CHR	BP	SNP	ID	beta2
 1	10177	rs367896724	1:10177:A:T	0.0000
 1	10352	rs201106462	1:10352:T:C	0.0000
 1	10505	rs531730856	1:10505:C:G	0.0125
@@ -109,7 +109,7 @@ python v2d.py \
 |-----------------|------|:------:|-------------|
 | `--print_mse`   | flag | `False` | Print MSE to stdout (and/or include in logs). |
 | `--print_model` | flag | `False` | Print fitted model summary (coefficients, architecture, and/or tree params). |
-| `--pred`        | `strings…` | `[]` | Print V2D scores from annotation files (should have the same column names as files provided in `--annot`). |
+| `--pred`        | `str` | `None` | Path/prefix to annotation files for prediction (should have the same column names as files provided in `--annot`). |
 
 ## Model-Specific Hyperparameters
 
@@ -202,13 +202,14 @@ for leaf in 100000 50000 25000 10000 5000; do
 done
 
 # --- Random Forest ---
-for ne in 100 200 500 1000 2500 5000; do
+for ms in 100 200 500 1000 2500 5000; do
   for md in 5 10 20 30 40 50 100 200; do
-    tag="rf_ne${ne}_md${md}"
+    tag="rf_ms${ms}_md${md}"
     python v2d.py --beta2 "$BETA2" --annot "$ANNOT" \
       --model rf \
-      --n_estimators "$ne" \
-      --max_depth "$md" \
+      --n_estimators 100 \
+      --max_depth $md \
+      --min_samples_leaf $ms \
       --print_mse \
       --out "$OUTDIR/$tag"
   done
@@ -256,7 +257,6 @@ python v2d.py --beta2 "$BETA2" --annot "$ANNOT" \
   --model linear \
   --print_mse \
   --out "$OUTDIR/linear_baseline"
-
 ```
 
 
@@ -264,7 +264,6 @@ python v2d.py --beta2 "$BETA2" --annot "$ANNOT" \
 To predict V2D scores, use the `--pred` option followed by annotation files in the same format as above.
 If you want to compute V2D scores for the same SNPs used in training, provide the same annotation files to `--annot` and `--pred`.
 If you want to compute V2D scores for a different set of SNPs, provide different annotation files for `--annot` and `--pred`.
-
 
 
 ```bash
