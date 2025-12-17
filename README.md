@@ -20,7 +20,7 @@ This document describes the expected formats for the annotation (`--annot`) and 
 
 **Purpose:** feature matrix for each variant/row used by the model.
 
-**File type:** TSV/CSV (default delimiter is `\t`), optionally gzipped (`.gz`).  
+**File type:** TSV/CSV (default delimiter is `\t`), optionally gzipped (`.annot.gz`).  
 **Required columns (first four, in this order):**  
 - `CHR` — chromosome (integer or string like `"X"`, but prefer integer coding: 1–22, 23 for X, 24 for Y)  
 - `BP` (or `POS`) — base-pair position (integer)  
@@ -48,7 +48,7 @@ CHR	BP	SNP	ID	MAFbin_frequent_1	MAFbin_frequent_2	GCcontent
 
 **Purpose:** provides the posterior estimates of squared normalized effect sizes for each variant.
 
-**File type:** TSV/CSV (default delimiter is `\t`), optionally gzipped (`.gz`).  
+**File type:** TSV/CSV (default delimiter is `\t`), optionally gzipped (`.annot.gz`).  
 **Required columns (first four, in this order):**  
 - `CHR`, `BP` (or `POS`), `SNP` (or `RS` or `rsid`), `ID` — must match the annotation file's keys.  
 - The **last column** contains the posterior estimates of squared normalized effect sizes (float). It can have any name (e.g., `Y`, `beta2`, etc.) — the script automatically uses the last column as the target.
@@ -75,7 +75,7 @@ Example of command line to compute V2D scores from the linear model and output M
 python v2d.py \
   --model linear \
   --annot annotations/baselineLF.common. \
-  --beta2 beta2/15ukbb.beta2_prior.common.txt.gz \
+  --beta2 beta2/15ukbb.beta2_prior.common.annot.gz \
   --print_mse \
   --pred annotations/baselineLF.common. \
   --out V2D/ukbb/v2d_ukbb.common
@@ -183,7 +183,7 @@ Compute MSE under a leave-even/odd-chromosomes-out (LEOCO) scheme to pick hyperp
 
 
 ```bash
-BETA2="beta2/15ukbb.beta2_prior.common.txt.gz"
+BETA2="beta2/15ukbb.beta2_prior.common.annot.gz"
 ANNOT="annotations/baselineLF.common."
 OUTDIR="runs_paper"
 mkdir -p "$OUTDIR"
@@ -268,7 +268,7 @@ If you want to compute V2D scores for a different set of SNPs, provide different
 
 ```bash
 python v2d.py \
-  --beta2 beta2/15ukbb.beta2_prior.common.txt.gz \
+  --beta2 beta2/15ukbb.beta2_prior.common.annot.gz \
   --annot annotations/baselineLF.common. \
   --model mlp \
   --n_neurons 6 \
@@ -290,7 +290,7 @@ Command line to plot a tree of depth 5 with a minimum 25K SNPs per leaf.
 **Usage**
 ```bash
 python plot_tree.py \
-  --beta2 beta2/15ukbb.beta2_prior.common.txt.gz \
+  --beta2 beta2/15ukbb.beta2_prior.common.annot.gz \
   --annot annotations/baselineLF.common. \
   --max_depth 5 \
   --min_samples_leaf 25000 \
