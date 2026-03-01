@@ -75,7 +75,7 @@ Example of command line to compute V2D scores from the linear model and output M
 python v2d.py \
   --model linear \
   --annot annotations/baselineLF.common. \
-  --beta2 beta2/15ukbb.beta2_prior.common.annot.gz \
+  --beta2 beta2/15ukbb.beta2_prior.common.text.gz \
   --print_mse \
   --pred annotations/baselineLF.common. \
   --out V2D/ukbb/v2d_ukbb.common
@@ -183,7 +183,7 @@ Compute MSE under a leave-even/odd-chromosomes-out (LEOCO) scheme to pick hyperp
 
 
 ```bash
-BETA2="beta2/15ukbb.beta2_prior.common.annot.gz"
+BETA2="beta2/15ukbb.beta2_prior.common.text.gz"
 ANNOT="annotations/baselineLF.common."
 OUTDIR="runs_paper"
 mkdir -p "$OUTDIR"
@@ -268,7 +268,7 @@ If you want to compute V2D scores for a different set of SNPs, provide different
 
 ```bash
 python v2d.py \
-  --beta2 beta2/15ukbb.beta2_prior.common.annot.gz \
+  --beta2 beta2/15ukbb.beta2_prior.common.text.gz \
   --annot annotations/baselineLF.common. \
   --model mlp \
   --n_neurons 6 \
@@ -290,7 +290,7 @@ Command line to plot a tree of depth 5 with a minimum 25K SNPs per leaf.
 **Usage**
 ```bash
 python plot_tree.py \
-  --beta2 beta2/15ukbb.beta2_prior.common.annot.gz \
+  --beta2 beta2/15ukbb.beta2_prior.common.text.gz \
   --annot annotations/baselineLF.common. \
   --max_depth 5 \
   --min_samples_leaf 25000 \
