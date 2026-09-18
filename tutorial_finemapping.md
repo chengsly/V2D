@@ -82,7 +82,7 @@ FM_DIR="tutorial_finemapping_height"
 ## 2. Perform functionally informed fine-mapping using V2D. 
 
 The script below reweight SuSiE posterior probabilities from the file tutorial_finemapping_height/finemapping/UKBB.Height.SuSiE.tsv.bgz, with V2D scores in files v2dx_ref/V2D/1000G_EUR/v2d_1000G.. Variants are matched between the V2D and fine-mapping files using the variant-ID column specified by --V2Did, and scores are read from the column specified by --V2Dscore.
-This script was adapted from cV2F_func_finemap_EMS.R, developed by Tabassum Fabiha and Kushal Dey for cV2F [URL]. We thank the cV2F authors for making their implementation publicly available. Our modified implementation adapts the original procedure to V2D/V2Dx scores. The original and modified code are distributed under the GNU General Public License.
+This script was adapted from cV2F_func_finemap_EMS.R, developed by Tabassum Fabiha and Kushal Dey for cV2F ([preprint](https://www.biorxiv.org/content/10.1101/2024.11.07.622307v2); [code](https://github.com/Deylab999MSKCC/cv2f/blob/main/SuSIE_finemap/cV2F_func_finemap_EMS.R)). We thank the cV2F authors for making their implementation publicly available. Our modified implementation adapts the original procedure to V2D/V2Dx scores. The original and modified code are distributed under the GNU General Public License.
 
 ```bash
 mkdir results_v2d
