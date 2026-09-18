@@ -123,7 +123,7 @@ rs2710889	0.313474912375072	0.309357957035223	1.72047849317531
 
 ## 3. Perform functionally informed fine-mapping using V2Dx
 
-The detailed pipeline to compute V2Dx scores is provided here [URL].
+The detailed pipeline to compute V2Dx scores is provided in the [V2Dx tutorial](tutorial.md).
 
 ### 3a. Split GWAS Summary Statistics
 
