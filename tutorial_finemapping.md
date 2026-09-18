@@ -5,7 +5,7 @@ This tutorial demonstrates how to leverage V2D and V2Dx as priors to re-weight H
 This tutorial uses European LD scores and is appropriate for European-ancestry GWAS. Other ancestries require matched LD and reference files.
 
 ## Requirements
-- Download Reference Files and Scripts from the V2Dx tutorial [https://github.com/chengsly/V2D/blob/main/tutorial.md].
+- Download Reference Files and Scripts from the [V2Dx tutorial](tutorial.md).
 
 - R 4.4 or later
 - R libraries data.table R.utils optparse zoo
